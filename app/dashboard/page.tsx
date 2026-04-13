@@ -166,27 +166,35 @@ export default function DashboardPage() {
 
   const summarizeNote = async (id: string, content: string) => {
     try {
+      console.log(`[Dashboard] Starting summarization for note ${id}`);
       setSummarizingId(id);
       setError(null);
       
       // Trim and validate content
       const trimmedContent = content.trim();
       if (!trimmedContent) {
+        console.error("[Dashboard] Note content is empty");
         throw new Error("Cannot summarize empty note");
       }
 
+      console.log(`[Dashboard] Calling API with content length: ${trimmedContent.length} chars`);
+      
       const response = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: trimmedContent }),
       });
 
+      console.log(`[Dashboard] API response status: ${response.status}`);
+
       // Handle different error scenarios
       if (response.status === 429) {
+        console.error("[Dashboard] Rate limited by API");
         throw new Error("Too many requests. Please wait a moment and try again.");
       }
 
       if (response.status === 503) {
+        console.error("[Dashboard] AI service unavailable");
         throw new Error("AI service is temporarily unavailable. Please try again later.");
       }
 
@@ -195,23 +203,38 @@ export default function DashboardPage() {
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorMessage;
+          console.error("[Dashboard] API error response:", errorData);
         } catch {
           errorMessage = `Server error (${response.status}): ${response.statusText}`;
+          console.error("[Dashboard] Could not parse error response");
         }
         throw new Error(errorMessage);
       }
 
-      const { summary } = await response.json();
+      const data = await response.json();
+      console.log("[Dashboard] API response:", data);
+      
+      const { summary } = data;
       
       if (!summary) {
+        console.error("[Dashboard] AI returned empty summary");
         throw new Error("AI generated empty summary. Please try again.");
       }
 
-      setSummaries((prev) => ({ ...prev, [id]: summary }));
+      console.log(`[Dashboard] Summary received - length: ${summary.length} chars`);
+      console.log(`[Dashboard] Summary text: ${summary.substring(0, 100)}...`);
+      
+      setSummaries((prev) => {
+        const updated = { ...prev, [id]: summary };
+        console.log("[Dashboard] State updated - summaries:", updated);
+        return updated;
+      });
+      
+      console.log(`[Dashboard] Summarization successful for note ${id}`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to summarize note";
+      console.error("[Dashboard] Summarize error:", err);
       setError(`Summarization error: ${errorMessage}`);
-      console.error("Summarize error:", err);
     } finally {
       setSummarizingId(null);
     }
