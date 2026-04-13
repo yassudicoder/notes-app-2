@@ -76,7 +76,7 @@ export default function NoteCard({
         className="relative backdrop-blur-3xl bg-gradient-to-br from-white/20 to-white/5 border border-white/30 hover:border-white/50 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col overflow-hidden cursor-pointer group/card select-none"
       >
         {/* Header with Menu */}
-        <div className="flex items-start justify-between px-6 py-5 sm:py-6">
+        <div className="flex items-start justify-between px-6 py-5 sm:py-6 gap-3">
           <div className="flex-1">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest opacity-70 mb-1">
               Note
@@ -86,11 +86,9 @@ export default function NoteCard({
             </time>
           </div>
 
-          {/* Menu Button - Visible on Hover */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileHover={{ opacity: 1, scale: 1 }}
-            className="opacity-0 group-hover/card:opacity-100 transition-opacity"
+          {/* Menu Button - Always visible, scale on hover */}
+          <div
+            className="flex-shrink-0 opacity-60 hover:opacity-100 group-hover/card:opacity-100 transition-opacity"
             onClick={(e) => e.stopPropagation()}
           >
             <NoteMenu
@@ -99,7 +97,7 @@ export default function NoteCard({
               onShare={onShare}
               isDeleting={isDeleting}
             />
-          </motion.div>
+          </div>
         </div>
 
         {/* Content Section */}
