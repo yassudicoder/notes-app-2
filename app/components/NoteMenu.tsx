@@ -98,7 +98,7 @@ export default function NoteMenu({
                     item.color
                   } ${(isDeleting && item.isDangerous) ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
                 >
-                  <span className="text-base flex-shrink-0">{item.icon}</span>
+                  <span className="text-base shrink-0">{item.icon}</span>
                   <span className="truncate">{item.label}</span>
                 </motion.button>
               ))}

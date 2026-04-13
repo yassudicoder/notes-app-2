@@ -226,7 +226,7 @@ export default function DashboardPageLite() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 to-white text-gray-900 p-4 sm:p-6">
       <main className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

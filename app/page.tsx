@@ -44,7 +44,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
@@ -57,7 +57,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 text-white flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
       <motion.div
         animate={{
@@ -90,7 +90,7 @@ export default function Home() {
           >
             📝
           </motion.div>
-          <h1 className="text-5xl sm:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-4">
+          <h1 className="text-5xl sm:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 mb-4">
             Notes App
           </h1>
           <p className="text-xl text-gray-400 leading-relaxed">
@@ -104,10 +104,10 @@ export default function Home() {
             whileTap={{ scale: 0.95 }}
             className="relative group"
           >
-            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000" />
+            <div className="absolute -inset-1 bg-linear-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000" />
             <Link
               href="/login"
-              className="relative block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg"
+              className="relative block bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg"
             >
               Sign In
             </Link>
@@ -118,7 +118,7 @@ export default function Home() {
             whileTap={{ scale: 0.95 }}
             className="relative group"
           >
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-0 group-hover:opacity-75 transition duration-1000" />
+            <div className="absolute -inset-1 bg-linear-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-0 group-hover:opacity-75 transition duration-1000" />
             <Link
               href="/signup"
               className="relative block backdrop-blur-xl bg-white/10 border border-white/20 hover:bg-white/20 px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg"

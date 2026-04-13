@@ -55,7 +55,7 @@ export default function NoteModal({
             className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
           >
             {/* Modal Content */}
-            <div className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl bg-gradient-to-br from-white/95 to-white/90 backdrop-blur-2xl border border-white/40 shadow-2xl flex flex-col">
+            <div className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl bg-linear-to-br from-white/95 to-white/90 backdrop-blur-2xl border border-white/40 shadow-2xl flex flex-col">
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/20">
                 <div className="flex-1">
@@ -82,7 +82,7 @@ export default function NoteModal({
               <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
                 {/* Main Content */}
                 <div className="space-y-4">
-                  <p className="text-lg text-gray-900 leading-relaxed whitespace-pre-wrap break-words font-light tracking-wide">
+                  <p className="text-lg text-gray-900 leading-relaxed wrap-break-word font-light tracking-wide">
                     {note.content}
                   </p>
                 </div>
@@ -92,7 +92,7 @@ export default function NoteModal({
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-6 p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200/60 space-y-3"
+                    className="mt-6 p-4 rounded-2xl bg-linear-to-br from-blue-50 to-cyan-50 border border-blue-200/60 space-y-3"
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-lg">✨</span>
@@ -113,7 +113,7 @@ export default function NoteModal({
                     disabled={isSummarizing}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold transition-all shadow-lg hover:shadow-xl"
+                    className="w-full py-3 px-4 rounded-xl bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold transition-all shadow-lg hover:shadow-xl"
                   >
                     {isSummarizing ? (
                       <span className="flex items-center justify-center gap-2">
@@ -133,7 +133,7 @@ export default function NoteModal({
               </div>
 
               {/* Footer */}
-              <div className="border-t border-white/20 bg-gradient-to-r from-gray-50/50 to-gray-100/50 px-6 py-4 flex gap-3">
+              <div className="border-t border-white/20 bg-linear-to-r from-gray-50/50 to-gray-100/50 px-6 py-4 flex gap-3">
                 <motion.button
                   onClick={onClose}
                   whileHover={{ scale: 1.05 }}

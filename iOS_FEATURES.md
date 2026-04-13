@@ -304,7 +304,7 @@ whileHover: { translateY: -4, scale: 1.01 }
 ### **Shimmer Effect**
 ```javascript
 // Diagonal line that shoots across button on hover
-<div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 
+<div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 
                  transform -skew-x-12 translate-x-full 
                  group-hover/btn:translate-x-0 transition-transform duration-500" />
 ```

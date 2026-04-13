@@ -268,7 +268,7 @@ export default function DashboardPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -281,7 +281,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 sm:p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 sm:p-8">
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -312,7 +312,7 @@ export default function DashboardPage() {
         <motion.div variants={itemVariants} className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">
+              <h1 className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">
                 My Notes
               </h1>
               <p className="text-gray-400">Keep your thoughts organized</p>
@@ -333,7 +333,7 @@ export default function DashboardPage() {
             className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-4 shadow-2xl"
           >
             <p className="text-sm text-gray-400 mb-1">Logged in as</p>
-            <p className="text-lg font-semibold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent break-all">
+            <p className="text-lg font-semibold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent break-all">
               {user?.email}
             </p>
           </motion.div>
@@ -342,7 +342,7 @@ export default function DashboardPage() {
         {/* Input Section */}
         <motion.div variants={itemVariants} className="mb-8">
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000" />
+            <div className="absolute -inset-1 bg-linear-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000" />
             <div className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-6 shadow-2xl">
               <label className="block text-sm font-semibold text-gray-300 mb-3">
                 Add a new note
@@ -369,7 +369,7 @@ export default function DashboardPage() {
                   disabled={isSubmitting || !note.trim()}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full sm:w-auto px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none"
+                  className="w-full sm:w-auto px-6 py-2 rounded-lg bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -448,7 +448,7 @@ export default function DashboardPage() {
                   whileHover={{ scale: 1.05 }}
                   className="inline-block"
                 >
-                  <div className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium cursor-help">
+                  <div className="px-6 py-3 rounded-lg bg-linear-to-r from-purple-600 to-pink-600 text-white font-medium cursor-help">
                     👆 Add a note above to get started
                   </div>
                 </motion.div>
