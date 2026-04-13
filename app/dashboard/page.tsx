@@ -401,47 +401,55 @@ export default function DashboardPage() {
                       variants={itemVariants}
                       exit={{ opacity: 0, scale: 0.8, x: -100 }}
                       layout
-                      className="group relative"
+                      className="group relative h-full flex flex-col"
                     >
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/50 to-pink-600/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300" />
                       <motion.div
                         whileHover={{ translateY: -4 }}
-                        className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-4 sm:p-5 shadow-xl hover:shadow-2xl transition-all duration-300"
+                        className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col"
                       >
-                        <p className="text-white text-sm sm:text-base leading-relaxed mb-3 break-words whitespace-pre-wrap overflow-hidden max-h-32 sm:max-h-40">
-                          {n.content}
-                        </p>
+                        {/* Content Section - Flexible with max height */}
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-5">
+                          <p className="text-white text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
+                            {n.content}
+                          </p>
 
-                        {/* Show summary if available */}
-                        {summaries[n.id] && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0, y: -10 }}
-                            animate={{ opacity: 1, height: "auto", y: 0 }}
-                            exit={{ opacity: 0, height: 0, y: -10 }}
-                            transition={{ type: "spring", stiffness: 200, damping: 25 }}
-                            className="mb-4 p-4 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/40 shadow-lg"
-                          >
-                            <div className="flex items-start justify-between mb-2">
-                              <p className="text-xs font-bold text-blue-300 uppercase tracking-wider">
-                                ✨ AI Summary
+                          {/* Summary Section - Animated inside content */}
+                          {summaries[n.id] && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0, y: -10 }}
+                              animate={{ opacity: 1, height: "auto", y: 0 }}
+                              exit={{ opacity: 0, height: 0, y: -10 }}
+                              transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                              className="mt-4 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/40"
+                            >
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider flex-shrink-0">
+                                  ✨ AI Summary
+                                </p>
+                                <motion.button
+                                  onClick={() => copySummaryToClipboard(summaries[n.id])}
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="px-2 py-1 text-xs rounded bg-blue-500/30 hover:bg-blue-500/50 text-blue-200 transition-all flex-shrink-0 whitespace-nowrap"
+                                >
+                                  {copiedId === n.id ? "✓ Copied" : "📋 Copy"}
+                                </motion.button>
+                              </div>
+                              <p className="text-xs sm:text-sm text-blue-100 leading-relaxed break-words">
+                                {summaries[n.id]}
                               </p>
-                              <motion.button
-                                onClick={() => copySummaryToClipboard(summaries[n.id])}
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-2 py-1 text-xs rounded bg-blue-500/30 hover:bg-blue-500/50 text-blue-200 transition-all"
-                              >
-                                {copiedId === n.id ? "✓ Copied" : "📋 Copy"}
-                              </motion.button>
-                            </div>
-                            <p className="text-sm text-blue-100 leading-relaxed break-words">
-                              {summaries[n.id]}
-                            </p>
-                          </motion.div>
-                        )}
+                            </motion.div>
+                          )}
+                        </div>
 
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 border-t border-white/10">
-                          <p className="text-xs text-gray-500">
+                        {/* Divider */}
+                        <div className="border-t border-white/10" />
+
+                        {/* Footer Section - Fixed at bottom */}
+                        <div className="p-4 sm:p-5 space-y-3">
+                          {/* Timestamp */}
+                          <p className="text-xs text-gray-400">
                             {new Date(n.created_at).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",
@@ -451,13 +459,14 @@ export default function DashboardPage() {
                             })}
                           </p>
 
-                          <div className="flex gap-2 w-full sm:w-auto">
+                          {/* Buttons Grid - Always inside card */}
+                          <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
                             <motion.button
                               onClick={() => summarizeNote(n.id, n.content)}
                               disabled={summarizingId === n.id}
                               whileHover={summarizingId !== n.id ? { scale: 1.05 } : {}}
                               whileTap={summarizingId !== n.id ? { scale: 0.95 } : {}}
-                              className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-medium text-sm transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none"
+                              className="flex-1 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-medium text-sm transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none disabled:cursor-not-allowed"
                             >
                               {summarizingId === n.id ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -480,7 +489,7 @@ export default function DashboardPage() {
                               disabled={deletingId === n.id}
                               whileHover={deletingId !== n.id ? { scale: 1.05 } : {}}
                               whileTap={deletingId !== n.id ? { scale: 0.95 } : {}}
-                              className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-red-600/20 border border-red-500/50 text-red-400 hover:bg-red-600/40 disabled:opacity-50 transition-all duration-300 font-medium text-sm"
+                              className="flex-1 px-3 py-2 rounded-lg bg-red-600/20 border border-red-500/50 text-red-400 hover:bg-red-600/40 hover:border-red-500/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium text-sm shadow-lg hover:shadow-xl"
                             >
                               {deletingId === n.id ? "..." : "🗑️ Delete"}
                             </motion.button>
