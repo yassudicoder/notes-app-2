@@ -7,12 +7,12 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Auth helper: Sign up
 export const signUp = async (email: string, password: string) => {
-  const result = await supabase.auth.signUp({ 
-    email, 
+  const result = await supabase.auth.signUp({
+    email,
     password,
     options: {
-      emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`,
-    }
+      emailRedirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback`,
+    },
   });
   return result;
 };
