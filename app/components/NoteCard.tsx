@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { useLongPress } from "@/app/hooks/useLongPress";
 import NoteMenu from "@/app/components/NoteMenu";
@@ -33,16 +33,9 @@ export default function NoteCard({
   onShare,
   onSummarize,
 }: NoteCardProps) {
-  const [isHoldingPress, setIsHoldingPress] = useState(false);
-
-  const longPressHandlers = useLongPress({
-    onLongPress: () => {
-      setIsHoldingPress(true);
-      onLongPress();
-    },
-    onRelease: () => {
-      setIsHoldingPress(false);
-    },
+  const { isHolding, handlers } = useLongPress({
+    onLongPress,
+    onRelease: undefined,
     duration: 400,
   });
 
@@ -70,9 +63,10 @@ export default function NoteCard({
       {/* Card Container */}
       <motion.div
         whileHover={{ translateY: -4, scale: 1.01 }}
+        animate={isHolding ? { scale: 0.98 } : { scale: 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
         onClick={onCardClick}
-        {...longPressHandlers}
+        {...handlers}
         className="relative backdrop-blur-3xl bg-gradient-to-br from-white/20 to-white/5 border border-white/30 hover:border-white/50 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col overflow-hidden cursor-pointer group/card select-none"
       >
         {/* Header with Menu */}
@@ -103,7 +97,7 @@ export default function NoteCard({
         {/* Content Section */}
         <div className="flex-1 overflow-hidden flex flex-col px-6 pb-5">
           {/* Show Summary if Long Pressing */}
-          {isHoldingPress && summary ? (
+          {isHolding && summary ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
