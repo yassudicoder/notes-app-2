@@ -1,65 +1,153 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { getCurrentUser } from "@/lib/supabase";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8 },
+  },
+};
 
 export default function Home() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { user } = await getCurrentUser();
+      if (user) {
+        router.push("/dashboard");
+      } else {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <motion.div
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-white text-5xl"
+        >
+          📝
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <motion.div
+        animate={{
+          y: [0, 20, 0],
+          x: [0, 10, 0],
+        }}
+        transition={{ duration: 8, repeat: Infinity }}
+        className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          y: [0, -20, 0],
+          x: [0, -10, 0],
+        }}
+        transition={{ duration: 10, repeat: Infinity }}
+        className="absolute bottom-20 right-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none"
+      />
+
+      <motion.main
+        className="text-center max-w-2xl z-10"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        <motion.div variants={itemVariants} className="mb-8">
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="text-7xl mb-6"
+          >
+            📝
+          </motion.div>
+          <h1 className="text-5xl sm:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-4">
+            Notes App
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl text-gray-400 leading-relaxed">
+            Keep your thoughts organized and secure. Your notes, encrypted and synchronized across all your devices.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative group"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000" />
+            <Link
+              href="/login"
+              className="relative block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg"
+            >
+              Sign In
+            </Link>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative group"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg blur opacity-0 group-hover:opacity-75 transition duration-1000" />
+            <Link
+              href="/signup"
+              className="relative block backdrop-blur-xl bg-white/10 border border-white/20 hover:bg-white/20 px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg"
+            >
+              Create Account
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg p-6">
+            <div className="text-3xl mb-3">🔐</div>
+            <h3 className="font-semibold mb-2">Secure</h3>
+            <p className="text-gray-400 text-sm">End-to-end encrypted with Supabase</p>
+          </div>
+
+          <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg p-6">
+            <div className="text-3xl mb-3">⚡</div>
+            <h3 className="font-semibold mb-2">Fast</h3>
+            <p className="text-gray-400 text-sm">Instant sync and real-time updates</p>
+          </div>
+
+          <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-lg p-6">
+            <div className="text-3xl mb-3">✨</div>
+            <h3 className="font-semibold mb-2">Beautiful</h3>
+            <p className="text-gray-400 text-sm">Modern UI with smooth animations</p>
+          </div>
+        </motion.div>
+      </motion.main>
     </div>
   );
 }
