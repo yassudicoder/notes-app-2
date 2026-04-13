@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "llama-3.1-70b-versatile",
+        model: "llama-3.3-70b-versatile",
         messages: [
           {
             role: "user",
