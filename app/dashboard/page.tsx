@@ -50,6 +50,7 @@ export default function DashboardPage() {
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaries, setSummaries] = useState<{ [key: string]: string }>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showingSummary, setShowingSummary] = useState<Set<string>>(new Set());
   
   // New iOS feature states
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
@@ -248,6 +249,19 @@ export default function DashboardPage() {
     } catch (err) {
       console.error("Copy failed:", err);
     }
+  };
+
+  const handleToggleSummary = (id: string, show: boolean) => {
+    console.log(`[Dashboard] Toggling summary view for note ${id}: ${show}`);
+    setShowingSummary((prev) => {
+      const updated = new Set(prev);
+      if (show) {
+        updated.add(id);
+      } else {
+        updated.delete(id);
+      }
+      return updated;
+    });
   };
 
   // iOS Feature Handlers
@@ -495,12 +509,14 @@ export default function DashboardPage() {
                         summary={summaries[n.id]}
                         isSummarizing={summarizingId === n.id}
                         isDeleting={deletingId === n.id}
+                        showingSummary={showingSummary.has(n.id)}
                         onCardClick={() => handleOpenNote(n)}
                         onLongPress={() => setLongPressId(n.id)}
                         onDelete={() => deleteNote(n.id)}
                         onArchive={() => handleArchiveNote(n.id)}
                         onShare={() => handleShareNote(n.id)}
                         onSummarize={() => summarizeNote(n.id, n.content)}
+                        onToggleSummary={handleToggleSummary}
                       />
                     ))}
                 </AnimatePresence>

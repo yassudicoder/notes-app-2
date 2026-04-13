@@ -80,40 +80,43 @@ export default function NoteModal({
 
               {/* Content Area - Scrollable */}
               <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-                {/* Main Content */}
-                <div className="space-y-4">
-                  <p className="text-lg text-gray-900 leading-relaxed wrap-break-word font-light tracking-wide">
+                {/* Main Content Section */}
+                <div className="prose prose-sm max-w-none">
+                  <div className="text-sm text-gray-700 leading-relaxed font-light whitespace-pre-wrap break-words">
                     {note.content}
-                  </p>
+                  </div>
                 </div>
 
-                {/* Summary Section */}
+                {/* Summary Section - Below content, not replacing it */}
                 {summary && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-6 p-4 rounded-2xl bg-linear-to-br from-blue-50 to-cyan-50 border border-blue-200/60 space-y-3"
+                    transition={{ delay: 0.1 }}
+                    className="mt-8 pt-6 border-t border-gray-200/50"
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mb-3">
                       <span className="text-lg">✨</span>
                       <p className="text-sm font-bold text-blue-900 uppercase tracking-wider">
                         AI Summary
                       </p>
                     </div>
-                    <p className="text-sm text-blue-900 leading-relaxed font-light">
-                      {summary}
-                    </p>
+                    <div className="p-4 rounded-xl bg-linear-to-br from-blue-50 to-cyan-50 border border-blue-100/60">
+                      <p className="text-sm text-blue-900 leading-relaxed font-light">
+                        {summary}
+                      </p>
+                    </div>
                   </motion.div>
                 )}
 
-                {/* Summarize Button */}
+                {/* Summarize Button - Only show if no summary yet */}
                 {!summary && onSummarize && (
                   <motion.button
                     onClick={() => onSummarize(note.id)}
                     disabled={isSummarizing}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 px-4 rounded-xl bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold transition-all shadow-lg hover:shadow-xl"
+                    className="w-full mt-6 py-3 px-4 rounded-lg bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold transition-all shadow-md hover:shadow-lg"
                   >
                     {isSummarizing ? (
                       <span className="flex items-center justify-center gap-2">
