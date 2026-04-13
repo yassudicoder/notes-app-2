@@ -45,6 +45,8 @@ export default function DashboardPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [summarizingId, setSummarizingId] = useState<string | null>(null);
+  const [summaries, setSummaries] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -150,6 +152,28 @@ export default function DashboardPage() {
       setError(err instanceof Error ? err.message : "Failed to delete note");
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const summarizeNote = async (id: string, content: string) => {
+    try {
+      setSummarizingId(id);
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to summarize");
+      }
+
+      const { summary } = await response.json();
+      setSummaries((prev) => ({ ...prev, [id]: summary }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to summarize note");
+    } finally {
+      setSummarizingId(null);
     }
   };
 
@@ -358,6 +382,23 @@ export default function DashboardPage() {
                         <p className="text-white text-base leading-relaxed mb-3 break-words whitespace-pre-wrap">
                           {n.content}
                         </p>
+
+                        {/* Show summary if available */}
+                        {summaries[n.id] && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="mb-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30"
+                          >
+                            <p className="text-xs font-semibold text-blue-300 mb-1">
+                              ✨ AI Summary:
+                            </p>
+                            <p className="text-sm text-blue-200">
+                              {summaries[n.id]}
+                            </p>
+                          </motion.div>
+                        )}
+
                         <div className="flex items-center justify-between">
                           <p className="text-xs text-gray-400">
                             {new Date(n.created_at).toLocaleDateString("en-US", {
@@ -368,15 +409,28 @@ export default function DashboardPage() {
                               minute: "2-digit",
                             })}
                           </p>
-                          <motion.button
-                            onClick={() => deleteNote(n.id)}
-                            disabled={deletingId === n.id}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="px-3 py-1 rounded-lg bg-red-600/20 border border-red-500/50 text-red-400 hover:bg-red-600/40 disabled:opacity-50 transition-all duration-300 text-sm font-medium"
-                          >
-                            {deletingId === n.id ? "..." : "Delete"}
-                          </motion.button>
+
+                          <div className="flex gap-2">
+                            <motion.button
+                              onClick={() => summarizeNote(n.id, n.content)}
+                              disabled={summarizingId === n.id}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="px-3 py-1 rounded-lg bg-blue-600/20 border border-blue-500/50 text-blue-400 hover:bg-blue-600/40 disabled:opacity-50 transition-all duration-300 text-sm font-medium"
+                            >
+                              {summarizingId === n.id ? "..." : "✨ Summarize"}
+                            </motion.button>
+
+                            <motion.button
+                              onClick={() => deleteNote(n.id)}
+                              disabled={deletingId === n.id}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="px-3 py-1 rounded-lg bg-red-600/20 border border-red-500/50 text-red-400 hover:bg-red-600/40 disabled:opacity-50 transition-all duration-300 text-sm font-medium"
+                            >
+                              {deletingId === n.id ? "..." : "Delete"}
+                            </motion.button>
+                          </div>
                         </div>
                       </motion.div>
                     </motion.div>
