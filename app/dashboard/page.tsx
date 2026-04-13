@@ -47,6 +47,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaries, setSummaries] = useState<{ [key: string]: string }>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -158,6 +159,8 @@ export default function DashboardPage() {
   const summarizeNote = async (id: string, content: string) => {
     try {
       setSummarizingId(id);
+      setError(null);
+      
       const response = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -175,6 +178,16 @@ export default function DashboardPage() {
       setError(err instanceof Error ? err.message : "Failed to summarize note");
     } finally {
       setSummarizingId(null);
+    }
+  };
+
+  const copySummaryToClipboard = async (summary: string) => {
+    try {
+      await navigator.clipboard.writeText(summary);
+      setCopiedId("copied");
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
     }
   };
 
@@ -264,7 +277,7 @@ export default function DashboardPage() {
         <motion.div variants={itemVariants} className="mb-8">
           <div className="relative group">
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000" />
-            <div className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 shadow-2xl">
+            <div className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-6 shadow-2xl">
               <label className="block text-sm font-semibold text-gray-300 mb-3">
                 Add a new note
               </label>
@@ -272,16 +285,16 @@ export default function DashboardPage() {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 onKeyPress={(e) => {
-                  if (e.key === "Enter" && e.ctrlKey) {
+                  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
                     addNote();
                   }
                 }}
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-500 focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 outline-none transition-all duration-300 resize-none"
-                placeholder="What's on your mind? (Ctrl+Enter to submit)"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-500 focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 outline-none transition-all duration-300 resize-none text-sm sm:text-base"
+                placeholder="What's on your mind? (Ctrl/Cmd+Enter)"
                 rows={3}
                 disabled={isSubmitting}
               />
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-4">
                 <p className="text-xs text-gray-500">
                   {note.length} characters
                 </p>
@@ -290,10 +303,10 @@ export default function DashboardPage() {
                   disabled={isSubmitting || !note.trim()}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none"
+                  className="w-full sm:w-auto px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none"
                 >
                   {isSubmitting ? (
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center justify-center gap-2">
                       <motion.span
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity }}
@@ -347,21 +360,36 @@ export default function DashboardPage() {
         {!loading && (
           <motion.div variants={itemVariants}>
             {notes.length === 0 ? (
-              <motion.div className="text-center py-16">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center py-16 sm:py-24"
+              >
                 <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="text-6xl mb-4"
+                  animate={{ scale: [1, 1.15, 1] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="text-7xl sm:text-8xl mb-4"
                 >
                   📝
                 </motion.div>
-                <p className="text-gray-400 text-lg">
-                  No notes yet. Create one to get started!
+                <h3 className="text-xl sm:text-2xl font-semibold text-white mb-2">
+                  No notes yet
+                </h3>
+                <p className="text-gray-400 mb-6 text-sm sm:text-base">
+                  Create your first note and let AI help you summarize it
                 </p>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="inline-block"
+                >
+                  <div className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium cursor-help">
+                    👆 Add a note above to get started
+                  </div>
+                </motion.div>
               </motion.div>
             ) : (
               <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
@@ -378,30 +406,42 @@ export default function DashboardPage() {
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600/50 to-pink-600/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300" />
                       <motion.div
                         whileHover={{ translateY: -4 }}
-                        className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-5 shadow-xl hover:shadow-2xl transition-all duration-300"
+                        className="relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-4 sm:p-5 shadow-xl hover:shadow-2xl transition-all duration-300"
                       >
-                        <p className="text-white text-base leading-relaxed mb-3 break-words whitespace-pre-wrap">
+                        <p className="text-white text-sm sm:text-base leading-relaxed mb-3 break-words whitespace-pre-wrap overflow-hidden max-h-32 sm:max-h-40">
                           {n.content}
                         </p>
 
                         {/* Show summary if available */}
                         {summaries[n.id] && (
                           <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            className="mb-3 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30"
+                            initial={{ opacity: 0, height: 0, y: -10 }}
+                            animate={{ opacity: 1, height: "auto", y: 0 }}
+                            exit={{ opacity: 0, height: 0, y: -10 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                            className="mb-4 p-4 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/40 shadow-lg"
                           >
-                            <p className="text-xs font-semibold text-blue-300 mb-1">
-                              ✨ AI Summary:
-                            </p>
-                            <p className="text-sm text-blue-200">
+                            <div className="flex items-start justify-between mb-2">
+                              <p className="text-xs font-bold text-blue-300 uppercase tracking-wider">
+                                ✨ AI Summary
+                              </p>
+                              <motion.button
+                                onClick={() => copySummaryToClipboard(summaries[n.id])}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="px-2 py-1 text-xs rounded bg-blue-500/30 hover:bg-blue-500/50 text-blue-200 transition-all"
+                              >
+                                {copiedId === n.id ? "✓ Copied" : "📋 Copy"}
+                              </motion.button>
+                            </div>
+                            <p className="text-sm text-blue-100 leading-relaxed break-words">
                               {summaries[n.id]}
                             </p>
                           </motion.div>
                         )}
 
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs text-gray-400">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 border-t border-white/10">
+                          <p className="text-xs text-gray-500">
                             {new Date(n.created_at).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",
@@ -411,25 +451,38 @@ export default function DashboardPage() {
                             })}
                           </p>
 
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 w-full sm:w-auto">
                             <motion.button
                               onClick={() => summarizeNote(n.id, n.content)}
                               disabled={summarizingId === n.id}
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              className="px-3 py-1 rounded-lg bg-blue-600/20 border border-blue-500/50 text-blue-400 hover:bg-blue-600/40 disabled:opacity-50 transition-all duration-300 text-sm font-medium"
+                              whileHover={summarizingId !== n.id ? { scale: 1.05 } : {}}
+                              whileTap={summarizingId !== n.id ? { scale: 0.95 } : {}}
+                              className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-medium text-sm transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none"
                             >
-                              {summarizingId === n.id ? "..." : "✨ Summarize"}
+                              {summarizingId === n.id ? (
+                                <span className="flex items-center justify-center gap-2">
+                                  <motion.span
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 1, repeat: Infinity }}
+                                    className="text-sm"
+                                  >
+                                    ⚡
+                                  </motion.span>
+                                  <span className="hidden sm:inline">AI...</span>
+                                </span>
+                              ) : (
+                                <span>✨ Summarize</span>
+                              )}
                             </motion.button>
 
                             <motion.button
                               onClick={() => deleteNote(n.id)}
                               disabled={deletingId === n.id}
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              className="px-3 py-1 rounded-lg bg-red-600/20 border border-red-500/50 text-red-400 hover:bg-red-600/40 disabled:opacity-50 transition-all duration-300 text-sm font-medium"
+                              whileHover={deletingId !== n.id ? { scale: 1.05 } : {}}
+                              whileTap={deletingId !== n.id ? { scale: 0.95 } : {}}
+                              className="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-red-600/20 border border-red-500/50 text-red-400 hover:bg-red-600/40 disabled:opacity-50 transition-all duration-300 font-medium text-sm"
                             >
-                              {deletingId === n.id ? "..." : "Delete"}
+                              {deletingId === n.id ? "..." : "🗑️ Delete"}
                             </motion.button>
                           </div>
                         </div>
