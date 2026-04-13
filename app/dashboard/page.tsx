@@ -161,21 +161,49 @@ export default function DashboardPage() {
       setSummarizingId(id);
       setError(null);
       
+      // Trim and validate content
+      const trimmedContent = content.trim();
+      if (!trimmedContent) {
+        throw new Error("Cannot summarize empty note");
+      }
+
       const response = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content: trimmedContent }),
       });
 
+      // Handle different error scenarios
+      if (response.status === 429) {
+        throw new Error("Too many requests. Please wait a moment and try again.");
+      }
+
+      if (response.status === 503) {
+        throw new Error("AI service is temporarily unavailable. Please try again later.");
+      }
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to summarize");
+        let errorMessage = "Failed to summarize note";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          errorMessage = `Server error (${response.status}): ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const { summary } = await response.json();
+      
+      if (!summary) {
+        throw new Error("AI generated empty summary. Please try again.");
+      }
+
       setSummaries((prev) => ({ ...prev, [id]: summary }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to summarize note");
+      const errorMessage = err instanceof Error ? err.message : "Failed to summarize note";
+      setError(`Summarization error: ${errorMessage}`);
+      console.error("Summarize error:", err);
     } finally {
       setSummarizingId(null);
     }
