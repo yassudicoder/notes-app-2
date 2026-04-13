@@ -158,14 +158,15 @@ export default function DashboardPage() {
   const summarizeNote = async (id: string, content: string) => {
     try {
       setSummarizingId(id);
-      const response = await fetch("/api/summarize", {
+      const response = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to summarize");
+        const error = await response.json();
+        throw new Error(error.error || "Failed to summarize");
       }
 
       const { summary } = await response.json();
